@@ -1,0 +1,27 @@
+server:
+  port: 10013
+  num: 4 # 服务器的数量
+
+spring:
+  application:
+    name: app
+  datasource: # 如果出现Public Key Retrieval is not allowed的报错，添加一下url配置 &allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3307/test?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: 123456 # 替换成自己的密码
+  redis:
+    redis1:
+      host: localhost # Redis服务器地址
+      database: 1 # Redis数据库索引（默认为0）redis默认有16个库
+      port: 6379 # Redis服务器连接端口
+      password: # Redis服务器连接密码（默认为空）
+      timeout: 1000 # 连接超时时间（毫秒）
+    pool:
+      max-active: 80 # 连接池最大连接数（使用负值表示没有限制）
+      max-wait: -1 # 连接池最大阻塞等待时间（使用负值表示没有限制）
+      max-idle: 80 # 连接池中的最大空闲连接
+      min-idle: 5 # 连接池中的最小空闲连接
+
+product:
+  buffer-inventory:
+    proportion: 1.5 # 商品 buffer 库存比例
