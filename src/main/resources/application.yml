@@ -1,8 +1,18 @@
 server:
   port: 10013
   num: 4 # 服务器的数量
+  tomcat: # 相关参数参考 org.springframework.boot.autoconfigure.web.ServerProperties.Tomcat
+    threads:
+      # 创建新线程时会分配大小为1M的线程栈。线程数的经验值为：1核2g内存，线程数经验值200；4核8g内存，线程数经验值800。
+      max: 800 # 最大工作线程数，默认200。（4核8g内存，线程数经验值800。）
+      min-spare: 100 # 最小工作线程数，默认10。（适当增大一些，以便应对突然增长的访问量）
+    accept-count: 1000 # 等待队列长度，默认100。
+    max-connections: 10000 # 服务器最大连接数，默认8192
 
 spring:
+  mvc:
+    servlet:
+      load-on-startup: 1 # 关闭DispatcherServlet懒加载，解决首次请求速度慢的问题
   application:
     name: app
   datasource: # 如果出现Public Key Retrieval is not allowed的报错，添加一下url配置 &allowPublicKeyRetrieval=true

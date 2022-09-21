@@ -25,7 +25,7 @@ public class SecKillController {
                                     " end " +
                                     " return 0 ";
 
-//    private OutputStream output = new FileOutputStream("/Users/jiangzx/github-workspace/seckill_demo/aaaa/test.txt");
+    private OutputStream output = new FileOutputStream("/Users/jiangzx/github-workspace/seckill_demo/aaaa/test.txt");
 
     @Resource(name = "redisTemplate1")
     RedisTemplate redisTemplate1;
@@ -36,14 +36,13 @@ public class SecKillController {
     // http://localhost:10013/addOrder/1
     @GetMapping("/addOrder/{productId}")
     public String addOrder(@PathVariable String productId) throws IOException {
-        ProductInventory productInventory = ProductConstant.productInventory.get(productId);
-        if (delLocalInventory(productInventory) && delRedisInventory(productId, productInventory)){
+        if (delLocalInventory(productId) && delRedisInventory(productId)){
             // 异步发送 创建订单/扣除库存 的消息
             // 过期订单处理（需要恢复本地库存与redis库存）
-//            sendLog();
+            sendLog();
             return "success";
         }else {
-//            sendLog();
+            sendLog();
             return "false";
         }
     }
@@ -54,9 +53,9 @@ public class SecKillController {
             ProductInventory productInventory = ProductConstant.productInventory.get(key);
 
             if ("1".equals(key)){
-//                String msg = "商品id：" + key + "。库存：" + productInventory.getInventory() + "。销售量：" + productInventory.getSaleNum() + "\n";
-//                byte data[] = msg.getBytes();
-//                output.write(data);
+                String msg = "商品id：" + key + "。库存：" + productInventory.getInventory() + "。销售量：" + productInventory.getSaleNum() + "\n";
+                byte data[] = msg.getBytes();
+                output.write(data);
             }
 //            logger.info("----------------------------");
 //            logger.info("商品id " + key);
@@ -67,7 +66,8 @@ public class SecKillController {
     }
 
     // 扣除本地库存
-    private boolean delLocalInventory(ProductInventory productInventory){
+    private boolean delLocalInventory(String productId){
+        ProductInventory productInventory = ProductConstant.productInventory.get(productId);
         if (productInventory.getInventory() > productInventory.getSaleNum().get()){
             // 还有库存则预售量+1
             long newSaleNum = productInventory.getSaleNum().addAndGet(1);
@@ -78,7 +78,7 @@ public class SecKillController {
     }
 
     // 扣除redis 库存
-    private boolean delRedisInventory(String productId, ProductInventory productInventory){
+    private boolean delRedisInventory(String productId){
         long result = (long)redisTemplate1.execute(
                 new DefaultRedisScript<>(redisScript, Long.class),
                 Arrays.asList(productId));
