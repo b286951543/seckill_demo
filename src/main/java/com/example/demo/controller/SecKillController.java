@@ -69,6 +69,7 @@ public class SecKillController {
     private boolean delLocalInventory(String productId){
         ProductInventory productInventory = ProductConstant.productInventory.get(productId);
         if (productInventory.getInventory() > productInventory.getSaleNum().get()){
+            // 还有库存则预售量+1
             long newSaleNum = productInventory.getSaleNum().addAndGet(1);
             return productInventory.getInventory() >= newSaleNum;
         }else {
