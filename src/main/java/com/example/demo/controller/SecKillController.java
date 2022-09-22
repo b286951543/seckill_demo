@@ -68,10 +68,10 @@ public class SecKillController {
     // 扣除本地库存
     private boolean delLocalInventory(String productId){
         ProductInventory productInventory = ProductConstant.productInventory.get(productId);
-        if (productInventory.getInventory() > productInventory.getSaleNum().sum()){
+        if (productInventory.getInventory() > productInventory.getSaleNum().get()){
             // 还有库存则预售量+1
-            productInventory.getSaleNum().add(1);
-            return productInventory.getInventory() >= productInventory.getSaleNum().sum();
+            long soleNum = productInventory.getSaleNum().addAndGet(1);
+            return productInventory.getInventory() >= soleNum;
         }else {
             return false;
         }
