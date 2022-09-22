@@ -12,5 +12,6 @@ public class ProductInventory {
     // 商品库存
     private long inventory;
     // 销售数量
-    private AtomicLong saleNum;
+//    private AtomicLong saleNum;
+    private LongAdder saleNum;
 }

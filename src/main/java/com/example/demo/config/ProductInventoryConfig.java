@@ -44,7 +44,8 @@ public class ProductInventoryConfig {
 
             long localInventory = inventory/serviceNum; // 该服务器的本地库存
             long newLocalInventory = (long) (localInventory*bufferProportion); // 该服务器的本地库存2(加上了buffer库存)
-            AtomicLong saleNum = new AtomicLong(0); // 该服务器的销售数量
+//            AtomicLong saleNum = new AtomicLong(0); // 该服务器的销售数量
+            LongAdder saleNum = new LongAdder(); // 该服务器的销售数量
             ProductInventory bean = ProductInventory.builder().inventory(newLocalInventory).saleNum(saleNum).build();
             ProductConstant.productInventory.put(id, bean);
 
