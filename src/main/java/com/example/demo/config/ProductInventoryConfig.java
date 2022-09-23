@@ -9,13 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.LongAccumulator;
-import java.util.concurrent.atomic.LongAdder;
 
 /**
  * 商品库存初始化
@@ -33,7 +30,6 @@ public class ProductInventoryConfig {
     private double bufferProportion;
 
     // 初始化库存
-    @PostConstruct
     public void intInventory(){
         // 查询所有的商品id及库存
         List<Product> list = ProductMock.getAllProduct();
@@ -54,11 +50,5 @@ public class ProductInventoryConfig {
             map.put("sole_num", 0);
             RedisUtil.HSet(redisTemplate1, id, map);
         }
-    }
-
-    public static void main(String[] args) {
-        LongAdder longAdder = new LongAdder();
-        longAdder.add(10);
-        System.out.println(longAdder.sum());
     }
 }
