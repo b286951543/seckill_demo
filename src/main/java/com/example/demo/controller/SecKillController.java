@@ -37,8 +37,9 @@ public class SecKillController {
     @GetMapping("/addOrder/{productId}")
     public String addOrder(@PathVariable String productId) throws IOException {
         if (delLocalInventory(productId) && delRedisInventory(productId)){
-            // 异步发送 创建订单/扣除库存 的消息
-            // 过期订单处理（需要恢复本地库存与redis库存）
+            // todo 异步发送 创建订单/扣除库存 的消息
+            // todo 过期订单处理（需要恢复本地库存与redis库存），可参考 《订单过期逻辑.md》
+            // todo 库存修改，需要计算出每台服务器应新增的库存（假设原本库存为10，现在改为了20，总库存新增了10，有2台服务器，那么每台服务器新增5库存+2buff库存），然后通过kafka发到每台服务器上
             sendLog();
             return "success";
         }else {
