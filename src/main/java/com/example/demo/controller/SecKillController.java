@@ -37,10 +37,15 @@ public class SecKillController {
     @GetMapping("/addOrder/{productId}")
     public String addOrder(@PathVariable String productId) throws IOException {
         if (delLocalInventory(productId) && delRedisInventory(productId)){
-            // todo 异步发送 创建订单/扣除库存 的消息
+            // todo 异步发送 kafka 创建订单/扣除库存 的消息
             // todo 过期订单处理（需要恢复本地库存，redis库存，数据库库存），可参考 《订单过期逻辑.md》
             // todo 本地库存通过 kafka 加，redis库存直接加，数据库库存也是直接加，例如：update aa_test set value = value + #{count} where value >= #{count}
             // todo 库存修改，需要计算出每台服务器应新增的库存（假设原本库存为10，现在改为了20，总库存新增了10，有2台服务器，那么每台服务器新增5库存+2buff库存），然后通过kafka发到每台服务器上
+            // todo 要注意数据库与redis 的数据一致性。当把数据库的销售量数据同步到redis时，需要等kafka里的消息消费完了才能同步！！
+            // todo 同步步骤：1.暂停下单功能，2.等kafka里的消息消费完，3.把数据库的销售量数据同步到redis
+            // todo 数据库也分两个字段：商品总数和销售量，库存通过两者相减得出
+            // todo 商品总数可以实时同步，因为只有后台会修改，但是销售量必须按照商品的方法同步，否则会数据不一致，导致超卖
+            // todo redis 可使用单机或集群（多主零从的方式）来部署。但不要使用主从的方式部署。因为如果有从节点，主节点把命令同步到从节点时，会有延迟。
             sendLog();
             return "success";
         }else {
